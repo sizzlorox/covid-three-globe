@@ -42,6 +42,14 @@ function App() {
     setGlobeData(mappedGlobeData);
   }, [apiData]);
 
+  useEffect(() => {
+    if ([undefined, null].includes(globeEl.current)) return;
+
+    // Auto-rotate
+    globeEl.current.controls().autoRotate = true;
+    globeEl.current.controls().autoRotateSpeed = 0.1;
+  }, [globeEl]);
+
   const weightColor = scaleSequentialSqrt(interpolateYlOrRd).domain([0, 1e7]);
 
   return (
@@ -54,7 +62,7 @@ function App() {
 
         pointsData={globeData}
         pointAltitude={d => d.size}
-        pointLabel={d => `${d.country} -- \nConfirmed: ${d.confirmed}\nRecovered: ${d.recovered}\nDeaths: ${d.deaths}\nPopulation: ${d.population}\nUpdated: ${d.updated}`}
+        pointLabel={d => `<b>${d.country}</b><br/>${d.confirmed ? `<b>Confirmed</b>: ${d.confirmed}<br/>` : ''}${d.recovered ? `<b>Recovered</b>: ${d.recovered}<br/>` : ''}${d.deaths ? `<b>Deaths</b>: ${d.deaths}<br/>` : ''}${d.population ? `<b>Population</b>: ${d.population}<br/>` : ''}${d.updated ? `<b>Updated</b>: ${d.updated}` : ''}`}
         pointColor={d => weightColor(d.confirmed)}
       />
     </div>
